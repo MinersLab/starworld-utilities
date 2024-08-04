@@ -22,6 +22,9 @@ import net.minecraft.text.TextContent
 import net.minecraft.util.Formatting
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import starworld.core.util.color
+import starworld.core.util.hover
+import starworld.core.util.text
 
 class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback {
 
@@ -60,13 +63,14 @@ class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback 
             blockEntity?.type,
             blockEntity?.createNbt() ?: NbtCompound()
         )
+        val id = if (allowFluids) Registries.FLUID.getId(blockState.fluidState.fluid).toString() else Registries.BLOCK.getId(block).toString()
         val text = MutableText.of(TextContent.EMPTY).apply {
             append(ShareItemCommand.toItemChatText(itemStack))
             append(" ")
                 .append(
                     MutableText.of(TextContent.EMPTY)
                         .append("id ")
-                        .append(MutableText.of(TextContent.EMPTY).append(if (allowFluids) Registries.FLUID.getId(blockState.fluidState.fluid).toString() else Registries.BLOCK.getId(block).toString()).styled { it.withColor(Formatting.GREEN) })
+                        .append(text(id).hover(text(id)).color(Formatting.GREEN))
                         .styled { it.withColor(Formatting.GRAY) }
                 )
             append(MutableText.of(TextContent.EMPTY).append(" at ").styled { it.withColor(Formatting.GRAY) })

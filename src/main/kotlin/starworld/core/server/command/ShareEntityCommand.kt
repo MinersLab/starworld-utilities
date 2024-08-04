@@ -12,6 +12,9 @@ import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.*
 import net.minecraft.util.Formatting
+import starworld.core.util.color
+import starworld.core.util.hover
+import starworld.core.util.text
 
 object ShareEntityCommand : CommandRegistrationCallback {
 
@@ -52,7 +55,7 @@ object ShareEntityCommand : CommandRegistrationCallback {
                 .append(
                     MutableText.of(TextContent.EMPTY)
                         .append("uuid ")
-                        .append(MutableText.of(TextContent.EMPTY).append(entity.uuidAsString).styled { it.withColor(Formatting.GREEN) })
+                        .append(text(entity.uuidAsString).hover(text(entity.uuidAsString)).color(Formatting.GREEN))
                         .append("")
                         .styled { it.withColor(Formatting.GRAY) }
                 )
