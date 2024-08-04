@@ -1,0 +1,54 @@
+{
+	"schemaVersion": 1,
+	"id": "starworldcorelib",
+	"version": "${version}",
+	"name": "StarWorld's CoreLib",
+	"description": "Some Utilities",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/starworldcorelib/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "starworld.core.StarWorldCoreLib",
+				"adapter": "kotlin"
+			}
+		],
+		"client": [
+			{
+				"value": "starworld.core.StarWorldCoreLibClient",
+				"adapter": "kotlin"
+			}
+		],
+		"fabric-datagen": [
+			{
+				"value": "starworld.core.datagen.StarWorldCoreLibDataGenerator",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"starworldcorelib.mixins.json",
+		{
+			"config": "starworldcorelib.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
