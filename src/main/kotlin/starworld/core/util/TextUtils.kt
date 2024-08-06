@@ -11,6 +11,11 @@ fun text(text: String? = null) = MutableText.of(TextContent.EMPTY).also {
     if (text != null) it.append(text)
 }
 
+fun text(text: Text? = null) = MutableText.of(TextContent.EMPTY).also {
+    if (text != null) it.append(text)
+}
+
+
 fun MutableText.hover(hoverText: Text) = styled {
     it.withHoverEvent(HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))
 }

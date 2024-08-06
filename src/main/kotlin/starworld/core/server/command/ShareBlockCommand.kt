@@ -9,6 +9,7 @@ import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.argument.BlockPosArgumentType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.message.MessageType
 import net.minecraft.network.message.SignedMessage
@@ -26,7 +27,9 @@ import starworld.core.util.color
 import starworld.core.util.hover
 import starworld.core.util.text
 
-class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback {
+enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback {
+
+    FLUID(true), BLOCK(false);
 
     override fun register(
         dispatcher: CommandDispatcher<ServerCommandSource>,
@@ -53,11 +56,17 @@ class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback 
         val playerManager = context.source.server.playerManager
         val world = context.source.playerOrThrow.serverWorld
         val blockState = world.getBlockState(blockPos)
-        if (allowFluids && blockState.fluidState.isEmpty) return 1
         val block = blockState.block
         val blockEntity = world.getBlockEntity(blockPos)
-        val itemStack = ItemStack(if (allowFluids) blockState.fluidState.fluid.bucketItem else block, 1)
-        if (allowFluids) itemStack.setCustomName(MutableText.of(TextContent.EMPTY).append(FluidVariantAttributes.getName(FluidVariant.of(blockState.fluidState.fluid))).styled { it.withItalic(false) })
+        val itemStack = ItemStack(
+            if (allowFluids) blockState.fluidState.let {
+                if (it.isEmpty) Items.BUCKET
+                else it.fluid.bucketItem
+            }
+            else block,
+            1
+        )
+        if (allowFluids) itemStack.setCustomName(text(FluidVariantAttributes.getName(FluidVariant.of(blockState.fluidState.fluid))).styled { it.withItalic(false) })
         BlockItem.setBlockEntityNbt(
             itemStack,
             blockEntity?.type,

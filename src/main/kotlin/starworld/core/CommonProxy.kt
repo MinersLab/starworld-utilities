@@ -7,7 +7,11 @@ import starworld.core.server.command.ShareItemCommand
 
 object CommonProxy {
 
-    val COMMANDS = listOf(ShareBlockCommand(true), ShareBlockCommand(false), ShareItemCommand, ShareEntityCommand)
+    val COMMANDS = listOf(
+        *ShareBlockCommand.entries.toTypedArray(),
+        ShareItemCommand,
+        ShareEntityCommand
+    )
 
     fun initializeCommands() {
         COMMANDS.forEach { CommandRegistrationCallback.EVENT.register(it) }
