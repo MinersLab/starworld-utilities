@@ -4,14 +4,13 @@ import net.minecraft.text.HoverEvent
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.text.TextColor
-import net.minecraft.text.TextContent
 import net.minecraft.util.Formatting
 
-fun text(text: String? = null) = MutableText.of(TextContent.EMPTY).also {
+fun text(text: String? = null): MutableText = Text.empty().also {
     if (text != null) it.append(text)
 }
 
-fun text(text: Text? = null) = MutableText.of(TextContent.EMPTY).also {
+fun text(text: Text? = null): MutableText = Text.empty().also {
     if (text != null) it.append(text)
 }
 

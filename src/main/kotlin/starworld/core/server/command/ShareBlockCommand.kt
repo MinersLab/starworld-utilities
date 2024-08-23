@@ -7,25 +7,25 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.argument.BlockPosArgumentType
-import net.minecraft.item.BlockItem
+import net.minecraft.component.DataComponentTypes.CUSTOM_NAME
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.message.MessageType
 import net.minecraft.network.message.SignedMessage
 import net.minecraft.registry.Registries
+import net.minecraft.registry.RegistryWrapper
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.HoverEvent
-import net.minecraft.text.MutableText
 import net.minecraft.text.Text
-import net.minecraft.text.TextContent
 import net.minecraft.util.Formatting
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import starworld.core.StarWorldCoreLib.rls
 import starworld.core.util.color
 import starworld.core.util.hover
 import starworld.core.util.text
+import java.util.stream.Stream
 
 enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback {
 
@@ -37,7 +37,7 @@ enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCall
         environment: CommandManager.RegistrationEnvironment
     ) {
         dispatcher.register(
-            CommandManager.literal(if (allowFluids) "share-fluid" else "share-block").then(
+            CommandManager.literal(rls(if (allowFluids) "share-fluid" else "share-block")).then(
                 CommandManager.argument("position", BlockPosArgumentType.blockPos())
                     .executes {
                         handle(BlockPosArgumentType.getLoadedBlockPos(it, "position"), it)
@@ -51,7 +51,6 @@ enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCall
         )
     }
 
-    @Suppress("UnstableApiUsage")
     fun handle(blockPos: BlockPos, context: CommandContext<ServerCommandSource>): Int {
         val playerManager = context.source.server.playerManager
         val world = context.source.playerOrThrow.serverWorld
@@ -66,25 +65,24 @@ enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCall
             else block,
             1
         )
-        if (allowFluids) itemStack.setCustomName(text(FluidVariantAttributes.getName(FluidVariant.of(blockState.fluidState.fluid))).styled { it.withItalic(false) })
-        BlockItem.setBlockEntityNbt(
+        if (allowFluids) itemStack.set(CUSTOM_NAME, text(FluidVariantAttributes.getName(FluidVariant.of(blockState.fluidState.fluid))).styled { it.withItalic(false) })
+        blockEntity?.setStackNbt(
             itemStack,
-            blockEntity?.type,
-            blockEntity?.createNbt() ?: NbtCompound()
+            RegistryWrapper.WrapperLookup.of(Stream.of(Registries.BLOCK.readOnlyWrapper))
         )
         val id = if (allowFluids) Registries.FLUID.getId(blockState.fluidState.fluid).toString() else Registries.BLOCK.getId(block).toString()
-        val text = MutableText.of(TextContent.EMPTY).apply {
+        val text = Text.empty().apply {
             append(ShareItemCommand.toItemChatText(itemStack))
             append(" ")
                 .append(
-                    MutableText.of(TextContent.EMPTY)
+                    Text.empty()
                         .append("id ")
                         .append(text(id).hover(text(id)).color(Formatting.GREEN))
                         .styled { it.withColor(Formatting.GRAY) }
                 )
-            append(MutableText.of(TextContent.EMPTY).append(" at ").styled { it.withColor(Formatting.GRAY) })
+            append(Text.empty().append(" at ").styled { it.withColor(Formatting.GRAY) })
             append(
-                MutableText.of(TextContent.EMPTY).apply {
+                Text.empty().apply {
                     append(blockPos.toShortString())
                     styled {
                         it.withHoverEvent(

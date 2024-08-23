@@ -12,13 +12,15 @@ import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.*
 import net.minecraft.util.Formatting
+import net.minecraft.util.hit.EntityHitResult
+import starworld.core.StarWorldCoreLib.rls
 import starworld.core.util.color
 import starworld.core.util.hover
 import starworld.core.util.text
 
 object ShareEntityCommand : CommandRegistrationCallback {
 
-    fun toEntityChatText(entity: Entity) = MutableText.of(TextContent.EMPTY).apply {
+    fun toEntityChatText(entity: Entity) = Text.empty().apply {
         styled { style: Style ->
             style.withHoverEvent(
                 HoverEvent(
@@ -36,32 +38,33 @@ object ShareEntityCommand : CommandRegistrationCallback {
         environment: CommandManager.RegistrationEnvironment
     ) {
         dispatcher.register(
-            CommandManager.literal("share-entity").then(
+            CommandManager.literal(rls("share-entity")).then(
                 CommandManager.argument("selector", EntityArgumentType.entity())
                     .executes {
                         handle(EntityArgumentType.getEntity(it, "selector"), it)
                     }
             ).executes {
-                handle(it.source.entityOrThrow, it)
+                val raycast = it.source.playerOrThrow.raycast(15.0, 0f, false)
+                handle(if (raycast is EntityHitResult) raycast.entity else it.source.entityOrThrow, it)
             }
         )
     }
 
     fun handle(entity: Entity, context: CommandContext<ServerCommandSource>): Int {
         val playerManager = context.source.server.playerManager
-        val text = MutableText.of(TextContent.EMPTY).apply {
+        val text = Text.empty().apply {
             append(toEntityChatText(entity))
             append(" ")
                 .append(
-                    MutableText.of(TextContent.EMPTY)
+                    Text.empty()
                         .append("uuid ")
                         .append(text(entity.uuidAsString).hover(text(entity.uuidAsString)).color(Formatting.GREEN))
                         .append("")
                         .styled { it.withColor(Formatting.GRAY) }
                 )
-            append(MutableText.of(TextContent.EMPTY).append(" at ").styled { it.withColor(Formatting.GRAY) })
+            append(Text.empty().append(" at ").styled { it.withColor(Formatting.GRAY) })
             append(
-                MutableText.of(TextContent.EMPTY).apply {
+                Text.empty().apply {
                     append(entity.blockPos.toShortString())
                     styled {
                         it.withHoverEvent(

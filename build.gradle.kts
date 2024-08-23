@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
 	id("fabric-loom") version "1.7-SNAPSHOT"
 	id("maven-publish")
-	id("org.jetbrains.kotlin.jvm") version "2.0.0"
+	id("org.jetbrains.kotlin.jvm") version "2.0.10"
 }
 
 version = property("mod_version").toString()
@@ -50,20 +50,20 @@ tasks.withType<ProcessResources> {
 
 
 tasks.withType<JavaCompile> {
-	options.release = 17
+	options.release = 21
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 	compilerOptions {
-		jvmTarget = JvmTarget.JVM_17
+		jvmTarget = JvmTarget.JVM_21
 	}
 }
 
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks.withType<Jar> {

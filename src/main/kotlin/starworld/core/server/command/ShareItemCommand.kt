@@ -13,13 +13,14 @@ import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.*
 import net.minecraft.text.HoverEvent.ItemStackContent
 import net.minecraft.util.Formatting
+import starworld.core.StarWorldCoreLib.rls
 import starworld.core.util.color
 import starworld.core.util.hover
 import starworld.core.util.text
 
 object ShareItemCommand : CommandRegistrationCallback {
 
-    fun toItemChatText(itemStack: ItemStack) = MutableText.of(TextContent.EMPTY).apply {
+    fun toItemChatText(itemStack: ItemStack) = Text.empty().apply {
         if (itemStack.count > 1) append("${itemStack.count} * ")
         styled { style: Style ->
             style.withHoverEvent(
@@ -38,16 +39,16 @@ object ShareItemCommand : CommandRegistrationCallback {
         environment: CommandManager.RegistrationEnvironment
     ) {
         dispatcher.register(
-            CommandManager.literal("share-item").executes { context: CommandContext<ServerCommandSource> ->
+            CommandManager.literal(rls("share-item")).executes { context: CommandContext<ServerCommandSource> ->
                 val player = context.source.playerOrThrow
                 val playerManager = context.source.server.playerManager
                 var itemStack = player.mainHandStack
                 if (itemStack.isEmpty) itemStack = player.offHandStack
                 val id = Registries.ITEM.getId(itemStack.item).toString()
-                val text = MutableText.of(TextContent.EMPTY).apply {
+                val text = Text.empty().apply {
                     append(toItemChatText(itemStack))
                     append(" ").append(
-                        MutableText.of(TextContent.EMPTY)
+                        Text.empty()
                             .append("id ")
                             .append(text(id).hover(text(id)).color(Formatting.GREEN))
                             .styled { it.withColor(Formatting.GRAY) }
