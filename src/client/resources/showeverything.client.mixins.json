@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "starworld.core.mixin.client",
+	"package": "dev.minerslab.showeverything.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"MinecraftClientMixin"
+        "MinecraftClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

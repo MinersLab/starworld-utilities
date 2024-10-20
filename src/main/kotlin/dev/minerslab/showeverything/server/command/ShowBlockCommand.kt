@@ -1,7 +1,10 @@
-package starworld.core.server.command
+package dev.minerslab.showeverything.server.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
+import dev.minerslab.showeverything.util.color
+import dev.minerslab.showeverything.util.hover
+import dev.minerslab.showeverything.util.text
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
@@ -21,13 +24,9 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import starworld.core.StarWorldCoreLib.rls
-import starworld.core.util.color
-import starworld.core.util.hover
-import starworld.core.util.text
 import java.util.stream.Stream
 
-enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback {
+enum class ShowBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallback {
 
     FLUID(true), BLOCK(false);
 
@@ -37,7 +36,7 @@ enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCall
         environment: CommandManager.RegistrationEnvironment
     ) {
         dispatcher.register(
-            CommandManager.literal(rls(if (allowFluids) "share-fluid" else "share-block")).then(
+            CommandManager.literal(if (allowFluids) "show-fluid" else "show-block").then(
                 CommandManager.argument("position", BlockPosArgumentType.blockPos())
                     .executes {
                         handle(BlockPosArgumentType.getLoadedBlockPos(it, "position"), it)
@@ -72,7 +71,7 @@ enum class ShareBlockCommand(val allowFluids: Boolean) : CommandRegistrationCall
         )
         val id = if (allowFluids) Registries.FLUID.getId(blockState.fluidState.fluid).toString() else Registries.BLOCK.getId(block).toString()
         val text = Text.empty().apply {
-            append(ShareItemCommand.toItemChatText(itemStack))
+            append(ShowItemCommand.toItemChatText(itemStack))
             append(" ")
                 .append(
                     Text.empty()

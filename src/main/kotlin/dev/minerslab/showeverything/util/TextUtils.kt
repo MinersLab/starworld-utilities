@@ -1,4 +1,4 @@
-package starworld.core.util
+package dev.minerslab.showeverything.util
 
 import net.minecraft.text.HoverEvent
 import net.minecraft.text.MutableText

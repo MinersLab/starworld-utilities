@@ -1,7 +1,10 @@
-package starworld.core.server.command
+package dev.minerslab.showeverything.server.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
+import dev.minerslab.showeverything.util.color
+import dev.minerslab.showeverything.util.hover
+import dev.minerslab.showeverything.util.text
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.command.argument.EntityArgumentType
@@ -10,15 +13,13 @@ import net.minecraft.network.message.MessageType
 import net.minecraft.network.message.SignedMessage
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.text.*
+import net.minecraft.text.HoverEvent
+import net.minecraft.text.Style
+import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.hit.EntityHitResult
-import starworld.core.StarWorldCoreLib.rls
-import starworld.core.util.color
-import starworld.core.util.hover
-import starworld.core.util.text
 
-object ShareEntityCommand : CommandRegistrationCallback {
+object ShowEntityCommand : CommandRegistrationCallback {
 
     fun toEntityChatText(entity: Entity) = Text.empty().apply {
         styled { style: Style ->
@@ -38,7 +39,7 @@ object ShareEntityCommand : CommandRegistrationCallback {
         environment: CommandManager.RegistrationEnvironment
     ) {
         dispatcher.register(
-            CommandManager.literal(rls("share-entity")).then(
+            CommandManager.literal("show-entity").then(
                 CommandManager.argument("selector", EntityArgumentType.entity())
                     .executes {
                         handle(EntityArgumentType.getEntity(it, "selector"), it)

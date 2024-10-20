@@ -1,15 +1,15 @@
-package starworld.core.mixin.client;
+package dev.minerslab.showeverything.mixin;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
+@Mixin(MinecraftServer.class)
+public class MinecraftServerMixin {
 
-	@Inject(at = @At("HEAD"), method = "run")
+	@Inject(at = @At("HEAD"), method = "loadWorld")
 	private void init(CallbackInfo info) {}
 
 }

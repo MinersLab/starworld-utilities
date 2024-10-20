@@ -1,17 +1,17 @@
-package starworld.core
+package dev.minerslab.showeverything
 
 import net.fabricmc.api.ModInitializer
 import net.minecraft.util.Identifier
 import org.slf4j.LoggerFactory
 
-object StarWorldCoreLib : ModInitializer {
+object ShowEverythingMod : ModInitializer {
 
-	const val ID = "swcl"
+	const val ID = "showeverything"
 
     val LOGGER = LoggerFactory.getLogger(ID)
 
 	override fun onInitialize() {
-		CommonProxy.initialize()
+        CommonProxy.initialize()
 		LOGGER.info("Initialized!")
 	}
 

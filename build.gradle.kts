@@ -19,7 +19,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		create("starworldcorelib") {
+		create("showeverything") {
 			sourceSet(sourceSets.getByName("main"))
 			sourceSet(sourceSets.getByName("client"))
 		}

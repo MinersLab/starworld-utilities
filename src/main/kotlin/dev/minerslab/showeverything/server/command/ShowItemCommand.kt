@@ -1,7 +1,10 @@
-package starworld.core.server.command
+package dev.minerslab.showeverything.server.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
+import dev.minerslab.showeverything.util.color
+import dev.minerslab.showeverything.util.hover
+import dev.minerslab.showeverything.util.text
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.command.CommandRegistryAccess
 import net.minecraft.item.ItemStack
@@ -10,15 +13,13 @@ import net.minecraft.network.message.SignedMessage
 import net.minecraft.registry.Registries
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.text.*
+import net.minecraft.text.HoverEvent
 import net.minecraft.text.HoverEvent.ItemStackContent
+import net.minecraft.text.Style
+import net.minecraft.text.Text
 import net.minecraft.util.Formatting
-import starworld.core.StarWorldCoreLib.rls
-import starworld.core.util.color
-import starworld.core.util.hover
-import starworld.core.util.text
 
-object ShareItemCommand : CommandRegistrationCallback {
+object ShowItemCommand : CommandRegistrationCallback {
 
     fun toItemChatText(itemStack: ItemStack) = Text.empty().apply {
         if (itemStack.count > 1) append("${itemStack.count} * ")
@@ -39,7 +40,7 @@ object ShareItemCommand : CommandRegistrationCallback {
         environment: CommandManager.RegistrationEnvironment
     ) {
         dispatcher.register(
-            CommandManager.literal(rls("share-item")).executes { context: CommandContext<ServerCommandSource> ->
+            CommandManager.literal("show-item").executes { context: CommandContext<ServerCommandSource> ->
                 val player = context.source.playerOrThrow
                 val playerManager = context.source.server.playerManager
                 var itemStack = player.mainHandStack
