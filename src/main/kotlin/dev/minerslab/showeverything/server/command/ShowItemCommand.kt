@@ -45,6 +45,7 @@ object ShowItemCommand : CommandRegistrationCallback {
                 val playerManager = context.source.server.playerManager
                 var itemStack = player.mainHandStack
                 if (itemStack.isEmpty) itemStack = player.offHandStack
+                if (itemStack.isEmpty) return@executes 0
                 val id = Registries.ITEM.getId(itemStack.item).toString()
                 val text = Text.empty().apply {
                     append(toItemChatText(itemStack))

@@ -56,15 +56,19 @@ enum class ShowBlockCommand(val allowFluids: Boolean) : CommandRegistrationCallb
         val blockState = world.getBlockState(blockPos)
         val block = blockState.block
         val blockEntity = world.getBlockEntity(blockPos)
+        var item = if (allowFluids) blockState.fluidState.let {
+            if (it.isEmpty) Items.BUCKET
+            else it.fluid.bucketItem
+        }
+        else block
+        if (item.asItem() == Items.AIR) item = Items.BARRIER
         val itemStack = ItemStack(
-            if (allowFluids) blockState.fluidState.let {
-                if (it.isEmpty) Items.BUCKET
-                else it.fluid.bucketItem
-            }
-            else block,
+            item,
             1
         )
         if (allowFluids) itemStack.set(CUSTOM_NAME, text(FluidVariantAttributes.getName(FluidVariant.of(blockState.fluidState.fluid))).styled { it.withItalic(false) })
+        else if (blockEntity != null && blockEntity.components.contains(CUSTOM_NAME)) itemStack.set(CUSTOM_NAME, text(blockEntity.components.get(CUSTOM_NAME)).styled { it.withItalic(false) })
+        else itemStack.set(CUSTOM_NAME, block.name.styled { it.withItalic(false) })
         blockEntity?.setStackNbt(
             itemStack,
             RegistryWrapper.WrapperLookup.of(Stream.of(Registries.BLOCK.readOnlyWrapper))
